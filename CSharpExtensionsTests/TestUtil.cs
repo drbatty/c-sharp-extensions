@@ -40,5 +40,29 @@ namespace CSharpExtensionsTests
         }
 
         #endregion
+
+        #region boolean handling
+
+        /// <summary>
+        /// generic extension which uses Assert.IsTrue to assert that a condition
+        /// should be true
+        /// </summary>
+        /// <param name="condition"></param>
+        public static void ShouldBeTrue(this bool condition)
+        {
+            Assert.IsTrue(condition);
+        }
+
+        /// <summary>
+        /// generic extension which uses Assert.IsFalse to assert that a condition
+        /// should be false
+        /// </summary>
+        /// <param name="condition"></param>
+        public static void ShouldBeFalse(this bool condition)
+        {
+            Assert.IsFalse(condition);
+        }
+
+        #endregion
     }
 }
