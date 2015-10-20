@@ -75,13 +75,78 @@ namespace CSharpExtensions.ContainerClasses
             return enumerable.Product(i => i);
         }
 
-        #endregion
-
         #region looping
 
         public static void Do<T>(this IEnumerable<T> enumerable, Action<int> λ)
         {
             enumerable.Count().Do(λ);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region index handling
+
+        public static bool AllIndices<T>(this IEnumerable<T> enumerable, Func<int, bool> λ)
+        {
+            return 0.Upto(enumerable.Count() - 1).All(λ);
+        }
+
+        public static void EachIndex<T>(this IEnumerable<T> enumerable, Action<int> λ)
+        {
+            0.Upto(enumerable.Count() - 1).Each(λ);
+        }
+
+        private static int Index<T>(this IEnumerable<T> enumerable, Func<T, bool> λ,
+            Func<IEnumerable<int>, Func<int, bool>, int> μ)
+        {
+            var list = enumerable as IList<T> ?? enumerable.ToList();
+            if (0.Upto(list.Count() - 1).None(i => λ(list[i])))
+                return -1;
+            return μ(0.Upto(list.Count() - 1), i => λ(list[i]));
+        }
+
+        public static int FirstIndex<T>(this IEnumerable<T> enumerable, Func<T, bool> λ)
+        {
+            return enumerable.Index(λ, (e, f) => e.First(f));
+        }
+
+        public static int LastIndex<T>(this IEnumerable<T> enumerable, Func<T, bool> λ)
+        {
+            return enumerable.Index(λ, (e, f) => e.Last(f));
+        }
+
+        public static int CountIndices<T>(this IEnumerable<T> enumerable, Func<int, bool> func)
+        {
+            return 0.Upto(enumerable.Count() - 1).Count(func);
+        }
+
+        #endregion
+
+        #region counting
+
+        /// <summary>
+        /// Extension equivalent to !Any but more readable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the IEnumerable</typeparam>
+        /// <param name="enumerable">The IEnumerable to test</param>
+        /// <returns>a boolean which is true if and only if the IEnumerable enumerates no objects</returns>
+        public static bool None<T>(this IEnumerable<T> enumerable)
+        {
+            return !enumerable.Any();
+        }
+
+        /// <summary>
+        /// Extension equivalent to !Any (with a query) but more readable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable to test</param>
+        /// <param name="query">The query to match</param>
+        /// <returns>a boolean which is true if and only if the enumerable enumerates no objects matching the query</returns>
+        public static bool None<T>(this IEnumerable<T> enumerable, Func<T, bool> query)
+        {
+            return query == null || !enumerable.Any(query);
         }
 
         #endregion
