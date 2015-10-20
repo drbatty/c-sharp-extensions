@@ -351,5 +351,80 @@ namespace CSharpExtensions.ContainerClasses
         }
 
         #endregion
+
+        #region filtering
+
+        /// <summary>
+        /// Extension to filter out all the default values from the given enumerable,
+        /// mainly used to get rid of all null values of an enumerable which enumerates a nullable type.
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable to iterate over</param>
+        /// <returns> an enumerable which only enumerates the non-default values of the original enumerable</returns>
+        public static IEnumerable<T> NotDefault<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable.Exclude(default(T));
+        }
+
+        /// <summary>
+        /// Extension to combine a selection with a filter
+        /// </summary>
+        /// <typeparam name="TSrc">The type enumerated by the enumerable</typeparam>
+        /// <typeparam name="TResult">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable to iterate over</param>
+        /// <param name="π">Predicate to filter the enumerable</param>
+        /// <param name="selector">Converter to perform the select</param>
+        public static IEnumerable<TResult> WhereSelect<TSrc, TResult>(this IEnumerable<TSrc> enumerable,
+            Predicate<TSrc> π, Converter<TSrc, TResult> selector)
+        {
+            return from t in enumerable where π(t) select selector(t);
+        }
+
+        /// <summary>
+        /// Extension to conditionally apply a filter to an enumerable
+        /// </summary>
+        /// <typeparam name="TSource">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable to iterate over</param>
+        /// <param name="condition">condition to determine whether to filter the enumerable</param>
+        /// <param name="π">predicate to perform the filtering</param>
+        public static IEnumerable<TSource> WhereIf<TSource>(this IEnumerable<TSource> enumerable, bool condition,
+            Func<TSource, bool> π)
+        {
+            if (π == null)
+                return enumerable;
+            return condition ? enumerable.Where(π) : enumerable;
+        }
+
+        /// <summary>
+        /// returns a enumerable of elements enumerated by an enumerabe that do not satisfy a given predicate
+        /// </summary>
+        /// <typeparam name="T">the type of object enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">the given enumerable</param>
+        /// <param name="π">the given predicate</param>
+        /// <returns>an enumerable of elements enumerated by an enumerabe that do not satisfy a given predicate</returns>
+        public static IEnumerable<T> WhereNot<T>(this IEnumerable<T> enumerable, Func<T, bool> π)
+        {
+            return enumerable.Where(t => !π(t));
+        }
+
+        /// <summary>
+        /// Selects distinct elements from an enumerable with a given key selector
+        /// </summary>
+        /// <typeparam name="T">the type which the enumerable enumerates</typeparam>
+        /// <typeparam name="TKey">the type of the key</typeparam>
+        /// <param name="enumerable"></param> the enumerable to enumerate over
+        /// <param name="λ">the selection function</param>
+        /// <returns>the enumerable with only one representative for each value of the key selector</returns>
+        public static IEnumerable<T> Distinct<T, TKey>(this IEnumerable<T> enumerable, Func<T, TKey> λ)
+        {
+            return enumerable.GroupBy(λ).Select(e => e.First());
+        }
+
+        public static IEnumerable<T> Search<T>(this IEnumerable<T> enumerable, Func<T, string> searchField, string searchTerm)
+        {
+            return enumerable.Where(e => searchField(e).Trim().ToLower().Contains(searchTerm.Trim().ToLower()));
+        }
+
+        #endregion
     }
 }

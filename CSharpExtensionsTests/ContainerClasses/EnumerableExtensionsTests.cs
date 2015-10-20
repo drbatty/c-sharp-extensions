@@ -4,6 +4,7 @@ using System.Linq;
 using CSharpExtensions;
 using CSharpExtensions.ContainerClasses;
 using CSharpExtensions.ContainerClasses.Enums;
+using CSharpExtensionsTests.GeneralFixtures;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CSharpExtensionsTests.ContainerClasses
@@ -518,6 +519,125 @@ namespace CSharpExtensionsTests.ContainerClasses
         {
             0.Upto(4).Rotate(EnumerableRotationDirection.Forwards).ShouldEqual(4, 0, 1, 2, 3);
             0.Upto(4).Rotate(EnumerableRotationDirection.Backwards).ShouldEqual(1, 2, 3, 4, 0);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region filtering tests
+
+        #region NotDefault tests
+
+        [TestMethod]
+        public void NotDefaultTest()
+        {
+            var strings = new List<string> { string.Empty, null, null, string.Empty };
+            strings.NotDefault().ShouldNumber(2);
+        }
+
+        [TestMethod]
+        public void NotDefaultTestEmpty()
+        {
+            var strings = new List<string>();
+            strings.NotDefault();
+        }
+
+        #endregion
+
+        #region WhereIf tests
+
+        [TestMethod]
+        public void WhereIfTestFalse()
+        {
+            1.Upto(5).WhereIf(false, n => n < 3).ShouldNumber(5);
+        }
+
+        [TestMethod]
+        public void WhereIfTestTrue()
+        {
+            1.Upto(5).WhereIf(true, n => n < 3).ShouldNumber(2);
+        }
+
+        [TestMethod]
+        public void WhereIfTestNull()
+        {
+            1.Upto(5).WhereIf(true, null);
+        }
+
+        #endregion
+
+        #region WhereSelect tests
+
+        [TestMethod]
+        public void WhereSelectTest()
+        {
+            1.Upto(5).WhereSelect(n => n >= 3, n => n * n).Sum().ShouldEqual(50);
+        }
+
+        [TestMethod]
+        public void WhereSelectTestNull()
+        {
+            1.Upto(5).WhereSelect<int, int>(null, null);
+        }
+
+        #endregion
+
+        #region Distinct tests
+
+        [TestMethod]
+        public void DistinctTest()
+        {
+            var oldBob = new Person { Name = "Bob", Age = 70 };
+            var youngBob = new Person { Name = "Bob", Age = 17 };
+            var rob = new Person { Name = "Rob", Age = 30 };
+            var people = new List<Person> { oldBob, youngBob, rob };
+            var peopleWithDifferentNames = people.Distinct(person => person.Name);
+
+            peopleWithDifferentNames.ShouldNumber(2);
+        }
+
+        #endregion
+
+        #region WhereNot tests
+
+        [TestMethod]
+        public void WhereNotTest()
+        {
+            (1.Upto(3)).WhereNot(n => n > 2).ShouldNumber(2);
+        }
+
+        #endregion
+
+        #region search tests
+
+        public static List<string> SearchList
+        {
+            get { return new List<string> { "ab", "bCD", "cDe" }; }
+        }
+
+        [TestMethod]
+        public void Search_with_empty_search_term_should_return_everything()
+        {
+            SearchList.Search(s => s, "").ShouldNumber(3);
+        }
+
+        [TestMethod]
+        public void Search_for_complete_string_should_return_correct_result()
+        {
+            SearchList.Search(s => s, "bCD").ShouldContainExactly("bCD");
+        }
+
+        [TestMethod]
+        public void Search_should_be_case_insensitive()
+        {
+            SearchList.Search(s => s, "bcd").ShouldContainExactly("bCD");
+        }
+
+        [TestMethod]
+        public void Search_should_find_substrings()
+        {
+            SearchList.Search(s => s, "cd").ShouldContainExactly("bCD", "cDe");
         }
 
         #endregion

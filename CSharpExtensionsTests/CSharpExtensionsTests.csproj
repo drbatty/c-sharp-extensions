@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ContainerClasses\EnumerableExtensionsTests.cs" />
+    <Compile Include="GeneralFixtures\Person.cs" />
     <Compile Include="GenericExtensionsTests.cs" />
     <Compile Include="IntExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
