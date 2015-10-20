@@ -221,5 +221,25 @@ namespace CSharpExtensionsTests.ContainerClasses
         #endregion
 
         #endregion
+
+        #region conversion tests
+
+        #region ToCollection tests
+
+        [TestMethod]
+        public void ToCollectionTestCount()
+        {
+            1.Upto(4).ToCollection().ShouldNumber(4);
+        }
+
+        [TestMethod]
+        public void ToCollectionTest()
+        {
+            1.Upto(4).ToCollection().Sum().ShouldEqual(10);
+        }
+
+        #endregion
+
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace CSharpExtensions.ContainerClasses
@@ -150,5 +151,24 @@ namespace CSharpExtensions.ContainerClasses
         }
 
         #endregion
+
+        #region conversion
+
+        /// <summary>
+        /// Extension to convert an IEnumerable to a enumerable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the IEnumerable/ contained in the enumerable</typeparam>
+        /// <param name="enumerable">The IEnumerable to convert</param>
+        /// <returns>A enumerable containing the same items as the IEnumerable enumerates</returns>
+        public static Collection<T> ToCollection<T>(this IEnumerable<T> enumerable)
+        {
+            var collection = new Collection<T>();
+            enumerable.Each(collection.Add);
+            return collection;
+        }
+
+        #endregion
+
+
     }
 }
