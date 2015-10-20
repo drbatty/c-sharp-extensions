@@ -20,12 +20,6 @@ namespace CSharpExtensions.ContainerClasses
                 λ(t);
         }
 
-        public static void EachPair<T>(this IEnumerable<T> enumerable, Action<T, T> λ)
-        {
-            var enumerable1 = enumerable as IList<T> ?? enumerable.ToList();
-            enumerable1.Each(t => enumerable1.Each(u => λ(t, u)));
-        }
-
         /// <summary>
         /// Inject takes an accumulator value, and iterates through an enumerable, accumulating each value using the lambda
         /// Similar to Linq Aggregate, but with an independent accumulator, like Ruby's inject method
@@ -67,6 +61,15 @@ namespace CSharpExtensions.ContainerClasses
         public static int Product(this IEnumerable<int> enumerable)
         {
             return enumerable.Product(i => i);
+        }
+
+        #endregion
+
+        #region looping
+
+        public static void Do<T>(this IEnumerable<T> enumerable, Action<int> λ)
+        {
+            enumerable.Count().Do(λ);
         }
 
         #endregion
