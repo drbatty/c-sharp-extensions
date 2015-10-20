@@ -39,6 +39,27 @@ namespace CSharpExtensionsTests
             iEnumerable.Count().ShouldEqual(count);
         }
 
+        /// <summary>
+        /// asserts that a given enumerable should enumerate no elements at all
+        /// </summary>
+        /// <typeparam name="T">the type which the enumerable enumerates</typeparam>
+        /// <param name="iEnumerable">the given enumerable</param>
+        public static void ShouldBeEmpty<T>(this IEnumerable<T> iEnumerable)
+        {
+            iEnumerable.ShouldNumber(0);
+        }
+
+        /// <summary>
+        /// asserts that the elements enumerated by a given enumerable should include a given element
+        /// </summary>
+        /// <typeparam name="T">the type enumerated by the enumerable</typeparam>
+        /// <param name="iEnumerable">the given enumerable</param>
+        /// <param name="t">the element which should be included</param>
+        public static void ShouldContain<T>(this IEnumerable<T> iEnumerable, T t)
+        {
+            iEnumerable.Contains(t).ShouldBeTrue();
+        }
+
         #endregion
 
         #region boolean handling

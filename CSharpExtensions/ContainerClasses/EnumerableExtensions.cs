@@ -125,7 +125,29 @@ namespace CSharpExtensions.ContainerClasses
 
         #endregion
 
+        #region conversion
+
+        /// <summary>
+        /// Extension to convert an IEnumerable to a enumerable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the IEnumerable/ contained in the enumerable</typeparam>
+        /// <param name="enumerable">The IEnumerable to convert</param>
+        /// <returns>A enumerable containing the same items as the IEnumerable enumerates</returns>
+        public static Collection<T> ToCollection<T>(this IEnumerable<T> enumerable)
+        {
+            var collection = new Collection<T>();
+            enumerable.Each(collection.Add);
+            return collection;
+        }
+
+        #endregion
+
         #region counting
+
+        public static bool SameNumberAs<TArg1, TArg2>(this IEnumerable<TArg1> enumerable, IEnumerable<TArg2> other)
+        {
+            return enumerable.Count() == other.Count();
+        }
 
         /// <summary>
         /// Extension equivalent to !Any but more readable
@@ -150,25 +172,92 @@ namespace CSharpExtensions.ContainerClasses
             return query == null || !enumerable.Any(query);
         }
 
-        #endregion
-
-        #region conversion
+        /// <summary>
+        /// Extension which returns true if and only if the IEnumerable enumerates more than one object
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the IEnumerable</typeparam>
+        /// <param name="enumerable">The IEnumerable to test</param>
+        /// <returns>a boolean which is true if and only if the IEnumerable enumerates more than one object</returns>
+        public static bool Many<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable.Count() > 1;
+        }
 
         /// <summary>
-        /// Extension to convert an IEnumerable to a enumerable
+        /// Extension which returns true if and only if the enumerable enumerates more than one object matching the query
         /// </summary>
-        /// <typeparam name="T">The type enumerated by the IEnumerable/ contained in the enumerable</typeparam>
-        /// <param name="enumerable">The IEnumerable to convert</param>
-        /// <returns>A enumerable containing the same items as the IEnumerable enumerates</returns>
-        public static Collection<T> ToCollection<T>(this IEnumerable<T> enumerable)
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The IEnumerable to test</param>
+        /// <param name="query">The query to match</param>
+        /// <returns>a boolean which is true if and only if the enumerable enumerates more than one object matching the query</returns>
+        public static bool Many<T>(this IEnumerable<T> enumerable, Func<T, bool> query)
         {
-            var collection = new Collection<T>();
-            enumerable.Each(collection.Add);
-            return collection;
+            return query == null || enumerable.Count(query) > 1;
+        }
+
+        /// <summary>
+        /// Extension which returns true if and only if the enumerable enumerates exactly one object
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The IEnumerable to test</param>
+        /// <returns>a boolean which is true if and only if the enumerable enumerates exactly one object</returns>
+        public static bool OneOf<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable.Count() == 1;
+        }
+
+        /// <summary>
+        /// Extension which returns true if and only if the enumerable enumerates exactly one object matching the query
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The IEnumerable to test</param>
+        /// <param name="query">The query to match</param>
+        /// <returns>a boolean which is true if and only if the enumerable enumerates exactly one object matching the query</returns>
+        public static bool OneOf<T>(this IEnumerable<T> enumerable, Func<T, bool> query)
+        {
+            return query == null || enumerable.Count(query) == 1;
+        }
+
+        /// <summary>
+        /// Extension which returns true if and only if the enumerable enumerates exactly X objects
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The IEnumerable to test</param>
+        /// <param name="count">The number of elements to test for</param>
+        /// <returns>a boolean which is true if and only if the enumerable enumerates exactly X objects</returns>
+        public static bool XOf<T>(this IEnumerable<T> enumerable, int count)
+        {
+            return enumerable.Count() == count;
+        }
+
+        /// <summary>
+        /// Extension which returns true if and only if the enumerable enumerates exactly X objects matching the query
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable to test</param>
+        /// <param name="query">The query to match</param>
+        /// <param name="count">The number of elements to test for</param>
+        /// <returns>a boolean which is true if and only if the enumerable enumerates exactly X objects matching the query</returns>
+        public static bool XOf<T>(this IEnumerable<T> enumerable, Func<T, bool> query, int count)
+        {
+            return query == null || enumerable.Count(query) == count;
+        }
+
+        
+        /// <summary>
+        /// Returns a histogram enumerable of pairs (t, n) where in each case n is the number
+        /// of occurrences of t in the given enumerable enumerable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable whose frequencies to calculate</param>
+        /// <returns>a histogram enumerable of pairs (t, n) where in each case n is the number
+        /// of occurrences of t in the given enumerable enumerable</returns>
+        public static IEnumerable<Tuple<T, int>> Frequencies<T>(this IEnumerable<T> enumerable)
+        {
+            var e = enumerable as IList<T> ?? enumerable.ToList();
+            return e.Distinct().Select(t => t.Pair(e.Count(i => i.Equals(t))));
         }
 
         #endregion
-
-
     }
 }

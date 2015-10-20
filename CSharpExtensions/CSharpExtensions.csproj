@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContainerClasses\EnumerableExtensions.cs" />
+    <Compile Include="GenericExtensions.cs" />
     <Compile Include="IntExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

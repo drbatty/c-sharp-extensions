@@ -186,6 +186,16 @@ namespace CSharpExtensionsTests.ContainerClasses
 
         #region counting tests
 
+        #region SameNumberAs tests
+
+        [TestMethod]
+        public void SameNumberAsTest()
+        {
+            1.Upto(5).SameNumberAs(6.Upto(10)).ShouldBeTrue();
+        }
+
+        #endregion
+
         #region None tests
 
         [TestMethod]
@@ -220,6 +230,143 @@ namespace CSharpExtensionsTests.ContainerClasses
 
         #endregion
 
+        #region Many tests
+
+        [TestMethod]
+        public void ManyTestTrue()
+        {
+            1.Upto(2).Many().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void ManyTestFalse()
+        {
+            var ints = new List<int> { 1 };
+            ints.Many().ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void ManyTestPredicateTrue()
+        {
+            6.Upto(10).Many(n => n > 8).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void ManyTestPredicateFalse()
+        {
+            6.Upto(9).Many(n => n > 8).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void ManyTestPredicateNull()
+        {
+            var ints = new List<int>();
+            ints.Many(null).ShouldBeTrue();
+        }
+
+        #endregion
+
+        #region OneOf tests
+
+        [TestMethod]
+        public void OneOfTestTrue()
+        {
+            var ints = 1.WrapInList();
+            ints.OneOf().ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void OneOfTestFalse()
+        {
+            1.Upto(2).OneOf().ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void OneOfTestPredicateTrue()
+        {
+            6.Upto(10).OneOf(n => n == 8).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void OneOfTestPredicateFalse()
+        {
+            var ints = new List<int> { 6, 7, 8, 9, 6 };
+            ints.OneOf(n => n == 6).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void OneOfTestPredicateNull()
+        {
+            new List<int>().OneOf(null).ShouldBeTrue();
+        }
+
+        #endregion
+
+        #region XOf tests
+
+        [TestMethod]
+        public void XOfTestTrue()
+        {
+            1.Upto(3).XOf(3).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void XOfTestFalse()
+        {
+            1.Upto(2).XOf(3).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void XOfTestPredicateTrue()
+        {
+            var ints = new List<int> { 6, 7, 8, 5, 3 };
+            ints.XOf(n => n < 7, 3).ShouldBeTrue();
+        }
+
+        [TestMethod]
+        public void XOfTestPredicateFalse1()
+        {
+            var ints = new List<int> { 6, 7, 8, 5, 3 };
+            ints.XOf(n => n < 7, 2).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void XOfTestPredicateFalse2()
+        {
+            var ints = new List<int> { 6, 7, 8, 5, 3 };
+            ints.XOf(n => n > 7, 3).ShouldBeFalse();
+        }
+
+        [TestMethod]
+        public void XOfTestPredicateNull()
+        {
+            var ints = new List<int>();
+            ints.XOf(null, 3).ShouldBeTrue();
+        }
+
+        #endregion
+
+        #region frequencies tests
+
+        [TestMethod]
+        public void TestFrequenciesEmpty()
+        {
+            new List<int>().Frequencies().ShouldBeEmpty();
+        }
+
+        [TestMethod]
+        public void TestFrequencies()
+        {
+            var ints = new List<int> {1, 1, 1, 2, 2, 3};
+            var freqs = ints.Frequencies().ToList();
+            freqs.ShouldNumber(3);
+            freqs.ShouldContain(1.Pair(3));
+            freqs.ShouldContain(2.Pair(2));
+            freqs.ShouldContain(3.Pair(1));
+        }
+
+        #endregion
+
         #endregion
 
         #region conversion tests
@@ -241,5 +388,7 @@ namespace CSharpExtensionsTests.ContainerClasses
         #endregion
 
         #endregion
+
+
     }
 }
