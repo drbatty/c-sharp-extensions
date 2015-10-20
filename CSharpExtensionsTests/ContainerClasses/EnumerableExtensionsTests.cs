@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CSharpExtensions;
 using CSharpExtensions.ContainerClasses;
+using CSharpExtensions.ContainerClasses.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CSharpExtensionsTests.ContainerClasses
@@ -389,6 +390,138 @@ namespace CSharpExtensionsTests.ContainerClasses
 
         #endregion
 
+        #region adding and removing elements tests
 
+        #region Append tests
+
+        [TestMethod]
+        public void AppendTestCount()
+        {
+            1.Upto(3).Append(4).ShouldNumber(4);
+        }
+
+        [TestMethod]
+        public void AppendTestElement()
+        {
+            1.Upto(3).Append(4).ElementAt(3).ShouldEqual(4);
+        }
+
+        [TestMethod]
+        public void AppendTestNull()
+        {
+            var nums = new List<string> { null, null };
+            nums.Append(null);
+        }
+
+        #endregion
+
+        #region Prepend tests
+
+        [TestMethod]
+        public void PrependTestCount()
+        {
+            1.Upto(3).Prepend(4).ShouldNumber(4);
+        }
+
+        [TestMethod]
+        public void PrependTestElement()
+        {
+            1.Upto(3).Prepend(4).ElementAt(0).ShouldEqual(4);
+        }
+
+        [TestMethod]
+        public void PrependTestNull()
+        {
+            var nums = new List<string> { null, null };
+            nums.Prepend(null);
+        }
+
+        #endregion
+
+        #region Exclude tests
+
+        [TestMethod]
+        public void ExcludeTest()
+        {
+            var nums = new List<int> { 1, 2, 3, 3, 2, 3, 4 };
+            nums.Exclude(3).ShouldNumber(4);
+        }
+
+        [TestMethod]
+        public void ExcludeTestEmpty()
+        {
+            var nums = new List<int>();
+            nums.Exclude(3);
+        }
+
+        [TestMethod]
+        public void ExcludeTestNull()
+        {
+            var nums = new List<string>();
+            nums.Exclude(null);
+        }
+
+        #endregion
+
+        #region RemoveLast tests
+
+        [TestMethod]
+        public void RemoveLastTestEmpty()
+        {
+            new List<string>().RemoveLast().ShouldBeEmpty();
+        }
+
+        [TestMethod]
+        public void RemoveLastTestOne()
+        {
+            "a".WrapInList().RemoveLast().ShouldBeEmpty();
+        }
+
+        [TestMethod]
+        public void RemoveLastTestThreeContainment()
+        {
+            new List<string> { "a", "b", "c" }.RemoveLast().ShouldContainExactly("a", "b");
+        }
+
+        #endregion
+
+        #region RemoveFirst tests
+
+        #region RemoveLast tests
+
+        [TestMethod]
+        public void RemoveFirstTestEmpty()
+        {
+            new List<string>().RemoveFirst().ShouldBeEmpty();
+        }
+
+        [TestMethod]
+        public void RemoveFirstTestOne()
+        {
+            "a".WrapInList().RemoveFirst().ShouldBeEmpty();
+        }
+
+        [TestMethod]
+        public void RemoveFirstTestThreeContainment()
+        {
+            new List<string> { "a", "b", "c" }.RemoveFirst().ShouldContainExactly("b", "c");
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Rotate tests
+
+        [TestMethod]
+        public void TestRotate()
+        {
+            0.Upto(4).Rotate(EnumerableRotationDirection.Forwards).ShouldEqual(4, 0, 1, 2, 3);
+            0.Upto(4).Rotate(EnumerableRotationDirection.Backwards).ShouldEqual(1, 2, 3, 4, 0);
+        }
+
+        #endregion
+
+        #endregion
     }
 }

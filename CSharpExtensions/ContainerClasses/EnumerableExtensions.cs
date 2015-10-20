@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CSharpExtensions.ContainerClasses.Enums;
 
 namespace CSharpExtensions.ContainerClasses
 {
@@ -256,6 +257,97 @@ namespace CSharpExtensions.ContainerClasses
         {
             var e = enumerable as IList<T> ?? enumerable.ToList();
             return e.Distinct().Select(t => t.Pair(e.Count(i => i.Equals(t))));
+        }
+
+        #endregion
+
+        #region adding and removing elements
+
+        /// <summary>
+        /// Extension which appends an item to the end of an enumerable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable to append to</param>
+        /// <param name="element">The element to append</param>
+        /// <returns>an enumerable, the original enumerable with the given element appended</returns>
+        public static IEnumerable<T> Append<T>(this IEnumerable<T> enumerable, T element)
+        {
+            foreach (var t in enumerable)
+                yield return t;
+            yield return element;
+        }
+
+        /// <summary>
+        /// Extension which prepends an item to the start of an enumerable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable to prepend to</param>
+        /// <param name="element">The element to prepend</param>
+        /// <returns>an IEnumerable, the original enumerable with the given element prepended</returns>
+        public static IEnumerable<T> Prepend<T>(this IEnumerable<T> enumerable, T element)
+        {
+            yield return element;
+            foreach (var t in enumerable)
+                yield return t;
+        }
+
+        /// <summary>
+        /// Extension to filter out a given value from the given enumerable,
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable to iterate over</param>
+        /// <param name="element">The element to exclude</param>param>
+        /// <returns> an enumerable which only enumerates the non-default values of the original enumerable</returns>
+        public static IEnumerable<T> Exclude<T>(this IEnumerable<T> enumerable, T element)
+        {
+            return enumerable.Where(t => !Equals(t, element));
+        }
+
+        /// <summary>
+        /// Extension to remove the last element of a given enumerable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable whose last element to remove</param>
+        /// <returns> the given enumerable with the last element removed</returns>
+        public static IEnumerable<T> RemoveLast<T>(this IEnumerable<T> enumerable)
+        {
+            var enumerable1 = enumerable as IList<T> ?? enumerable.ToList();
+            for (var i = 0; i < enumerable1.Count() - 1; i++)
+                yield return enumerable1.ElementAt(i);
+        }
+
+        /// <summary>
+        /// Extension to remove the first element of a given enumerable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">The enumerable whose first element to remove</param>
+        /// <returns> the given enumerable with the first element removed</returns>
+        public static IEnumerable<T> RemoveFirst<T>(this IEnumerable<T> enumerable)
+        {
+            var enumerable1 = enumerable as IList<T> ?? enumerable.ToList();
+            for (var i = 1; i < enumerable1.Count(); i++)
+                yield return enumerable1.ElementAt(i);
+        }
+
+        public static IEnumerable<T> Rotate<T>(this IEnumerable<T> enumerable, EnumerableRotationDirection direction)
+        {
+            var enumerable1 = enumerable as IList<T> ?? enumerable.ToList();
+            switch (direction)
+            {
+                case EnumerableRotationDirection.Backwards:
+                    for (var i = 1; i < enumerable1.Count(); i++)
+                        yield return enumerable1.ElementAt(i);
+                    if (enumerable1.Any())
+                        yield return enumerable1.First();
+                    break;
+
+                case EnumerableRotationDirection.Forwards:
+                    if (enumerable1.Any())
+                        yield return enumerable1.Last();
+                    for (var i = 0; i < enumerable1.Count() - 1; i++)
+                        yield return enumerable1.ElementAt(i);
+                    break;
+            }
         }
 
         #endregion

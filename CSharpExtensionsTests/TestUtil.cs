@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using CSharpExtensions.ContainerClasses;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CSharpExtensionsTests
@@ -60,7 +61,32 @@ namespace CSharpExtensionsTests
             iEnumerable.Contains(t).ShouldBeTrue();
         }
 
+        /// <summary>
+        /// asserts that a given enumerable should enumerate all of the supplied generic arguments
+        /// </summary>
+        /// <typeparam name="T">the type which the enumerable enumerates</typeparam>
+        /// <param name="iEnumerable">the given enumerable</param>
+        /// <param name="ts">the generic arguments supplied</param>
+        public static void ShouldContain<T>(this IEnumerable<T> iEnumerable, params T[] ts)
+        {
+            ts.Each(iEnumerable.ShouldContain);
+        }
+
+        public static void ShouldContainExactly<T>(this IEnumerable<T> iEnumerable, params T[] ts)
+        {
+            var enumerable = iEnumerable as IList<T> ?? iEnumerable.ToList();
+            enumerable.ShouldContain(ts);
+            enumerable.Count().ShouldEqual(ts.Length);
+        }
+
         #endregion
+
+        public static void ShouldEqual<T>(this IEnumerable<T> iEnumerable, params T[] ts)
+        {
+            var list = iEnumerable as List<T> ?? iEnumerable.ToList();
+            list.Count().ShouldEqual(ts.Length);
+            ts.EachIndex(i => list[i].ShouldEqual(ts[i]));
+        }
 
         #region boolean handling
 
