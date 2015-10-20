@@ -135,5 +135,12 @@ namespace CSharpExtensionsTests
         {
             2.Times(null);
         }
+
+        [TestMethod]
+        public void ArrayUpToTest()
+        {
+            var array = 1.ArrayUpto(5);
+            array.ShouldNumber(5);
+        }
     }
 }

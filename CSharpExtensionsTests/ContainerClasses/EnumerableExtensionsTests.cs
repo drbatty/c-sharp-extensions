@@ -41,6 +41,18 @@ namespace CSharpExtensionsTests.ContainerClasses
 
         #endregion
 
+        #region EachPair tests
+
+        [TestMethod]
+        public void TestEachPair()
+        {
+            var total = 0;
+            1.Upto(4).EachPair((x,y) => total += 3*x + 5*y);
+            total.ShouldEqual(320);
+        }
+
+        #endregion
+
         #region Inject tests
 
         [TestMethod]

@@ -21,6 +21,18 @@ namespace CSharpExtensions.ContainerClasses
         }
 
         /// <summary>
+        /// Applies an action to each pair (a, b) where a and b are both enumerated by a given enumerable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the IEnumerable</typeparam>
+        /// <param name="enumerable">The IEnumerable to iterate over</param>
+        /// <param name="λ">The action to apply to each pair</param>
+        public static void EachPair<T>(this IEnumerable<T> enumerable, Action<T, T> λ)
+        {
+            var enumerable1 = enumerable as IList<T> ?? enumerable.ToList();
+            enumerable1.Each(t => enumerable1.Each(u => λ(t, u)));
+        }
+
+        /// <summary>
         /// Inject takes an accumulator value, and iterates through an enumerable, accumulating each value using the lambda
         /// Similar to Linq Aggregate, but with an independent accumulator, like Ruby's inject method
         /// </summary>
