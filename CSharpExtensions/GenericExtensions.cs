@@ -133,13 +133,6 @@ namespace CSharpExtensions
 
         #region null handling
 
-        public static void ReturningIfNull<T, TArg>(this TArg t, T s, Action<TArg> λ)
-        {
-            // ReSharper disable once CompareNonConstrainedGenericWithNull
-            if (s != null)
-                λ(t);
-        }
-
         public static TResult DefaultIfNull<TArg, TResult>(this TArg t, Func<TArg, TResult> λ) where TArg : class
         {
             return t == null ? default(TResult) : λ(t);
@@ -147,7 +140,7 @@ namespace CSharpExtensions
 
         public static string ToStringOrEmpty<T>(this T t) where T : class
         {
-            return DefaultIfNull(t, o => o.ToString());
+            return t == null ? "" : t.ToString();
         }
 
         #endregion

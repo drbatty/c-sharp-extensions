@@ -1,5 +1,8 @@
 using System;
+using System.Xml;
 using CSharpExtensions;
+using CSharpExtensions.Text;
+using CSharpExtensionsTests.GeneralFixtures;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CSharpExtensionsTests
@@ -181,35 +184,63 @@ namespace CSharpExtensionsTests
             list.ShouldContain(1);
         }
 
+        [TestMethod]
+        public void ToXmlTest()
+        {
+            var bob = new Person { Name = "Bob", Age = 43 };
+            var xml = bob.ToXml();
+            var flattened = xml.FlattenXml();
+            flattened.ShouldEqual(
+                new Tuple<XmlNodeType,string>(XmlNodeType.XmlDeclaration, "xml"),
+                new Tuple<XmlNodeType, string>(XmlNodeType.Element, "Person"),
+                new Tuple<XmlNodeType, string>(XmlNodeType.Element, "Name"),
+                new Tuple<XmlNodeType, string>(XmlNodeType.Text, "Bob"),
+                new Tuple<XmlNodeType, string>(XmlNodeType.EndElement, "Name"),
+                new Tuple<XmlNodeType, string>(XmlNodeType.Element, "Age"),
+                new Tuple<XmlNodeType, string>(XmlNodeType.Text, "43"),
+                new Tuple<XmlNodeType, string>(XmlNodeType.EndElement, "Age"),
+                new Tuple<XmlNodeType, string>(XmlNodeType.EndElement, "Person")
+                );
+        }
+
         #endregion
 
         #region null handling tests
 
         [TestMethod]
-        public void ReturningIfNullTestValueType()
+        public void TestDefaultIfNull()
         {
-            var total = 0;
-            Action<int> addOne = n => total += 1;
-            1.ReturningIfNull(2, addOne);
-            total.ShouldEqual(1);
+            Func<string, int> f = s => 2;
+            string str = null;
+            str.DefaultIfNull(f).ShouldEqual(0);
         }
 
         [TestMethod]
-        public void ReturningIfNullTestNull()
+        public void TestDefaultIfNull2()
         {
-            var total = 0;
-            Action<int> addOne = n => total += 1;
-            1.ReturningIfNull<string, int>(null, addOne);
-            total.ShouldEqual(0);
+            Func<string, string> f = s => "a";
+            string str = null;
+            Assert.IsNull(str.DefaultIfNull(f));
         }
 
         [TestMethod]
-        public void ReturningIfNullTestNotNull()
+        public void TestDefaultIfNull3()
         {
-            var total = 0;
-            Action<string> addOne = @string => total += 1;
-            "a".ReturningIfNull("b", addOne);
-            total.ShouldEqual(1);
+            Func<string, int> f = s => 2;
+            "".DefaultIfNull(f).ShouldEqual(2);
+        }
+
+        [TestMethod]
+        public void TestToStringOrEmptyNotNull()
+        {
+            "a".ToStringOrEmpty().ShouldEqual("a");
+        }
+
+        [TestMethod]
+        public void TestToStringOrEmptyNull()
+        {
+            string str = null;
+            str.ToStringOrEmpty().ShouldEqual("");
         }
 
         #endregion
