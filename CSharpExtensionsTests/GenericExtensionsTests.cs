@@ -212,6 +212,7 @@ namespace CSharpExtensionsTests
         {
             Func<string, int> f = s => 2;
             string str = null;
+            // ReSharper disable once ExpressionIsAlwaysNull
             str.DefaultIfNull(f).ShouldEqual(0);
         }
 
@@ -240,6 +241,7 @@ namespace CSharpExtensionsTests
         public void TestToStringOrEmptyNull()
         {
             string str = null;
+            // ReSharper disable once ExpressionIsAlwaysNull
             str.ToStringOrEmpty().ShouldEqual("");
         }
 

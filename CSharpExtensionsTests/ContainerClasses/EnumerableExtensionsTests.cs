@@ -410,8 +410,8 @@ namespace CSharpExtensionsTests.ContainerClasses
         [TestMethod]
         public void AppendTestNull()
         {
-            var nums = new List<string> { null, null };
-            nums.Append(null);
+            // ReSharper disable once IteratorMethodResultIsIgnored
+            new List<string> { null, null }.Append(null);
         }
 
         #endregion
@@ -434,6 +434,7 @@ namespace CSharpExtensionsTests.ContainerClasses
         public void PrependTestNull()
         {
             var nums = new List<string> { null, null };
+            // ReSharper disable once IteratorMethodResultIsIgnored
             nums.Prepend(null);
         }
 

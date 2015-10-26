@@ -25,6 +25,19 @@ namespace CSharpExtensionsTests
             Assert.AreEqual(left, right);
         }
 
+        /// <summary> 
+        /// generic extension which
+        /// uses Assert.AreNotEqual to assert the the operand should not equal the supplied object,
+        /// the expected value being the supplied object and the observed value being the operand
+        /// </summary>
+        /// <typeparam name="T">type of operand and supplied object</typeparam>
+        /// <param name="right">operand</param>
+        /// <param name="left">supplied object</param>
+        public static void ShouldNotEqual<T>(this T right, T left)
+        {
+            Assert.AreNotEqual(left, right);
+        }
+
         #endregion
 
         #region enumerables
@@ -59,6 +72,17 @@ namespace CSharpExtensionsTests
         public static void ShouldContain<T>(this IEnumerable<T> iEnumerable, T t)
         {
             iEnumerable.Contains(t).ShouldBeTrue();
+        }
+
+        /// <summary>
+        /// asserts that a given enumerable should enumerate all of the elements enumerated by a second given enumerable
+        /// </summary>
+        /// <typeparam name="T">the type of object which the enumerable enumerates</typeparam>
+        /// <param name="iEnumerable">the given enumerable</param>
+        /// <param name="contained">the second given enumerable</param>
+        public static void ShouldContain<T>(this IEnumerable<T> iEnumerable, IEnumerable<T> contained)
+        {
+            contained.Each(iEnumerable.ShouldContain);
         }
 
         /// <summary>
@@ -108,6 +132,16 @@ namespace CSharpExtensionsTests
         public static void ShouldBeFalse(this bool condition)
         {
             Assert.IsFalse(condition);
+        }
+
+        #endregion
+
+        #region dictionaries
+
+        public static void ShouldBeEquivalentMappingTo<TKey, TValue>(this IDictionary<TKey, TValue> dictionary,
+            IDictionary<TKey, TValue> other)
+        {
+            dictionary.IsEquivalentMappingTo(other).ShouldBeTrue();
         }
 
         #endregion

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 namespace CSharpExtensions.Text
@@ -38,5 +39,39 @@ namespace CSharpExtensions.Text
 
             return elements;
         }
+
+        #region comma separation
+
+        /// <summary>
+        /// returns a string representation of a given enumerable of strings with the elements separated by commas and no spacing
+        /// </summary>
+        /// <typeparam name="T">the type enumerated by the enumerable</typeparam>
+        /// <param name="stringList">the li</param>
+        /// <returns>a string representation of a given enumerable of strings with the elements separated by commas and no spacing</returns>
+        public static string CommaSeparate<T>(this IEnumerable<T> stringList)
+        {
+            return stringList != null ? string.Join(",", stringList) : string.Empty;
+        }
+
+        public static string SpacedCommaSeparate<T>(this IEnumerable<T> stringList)
+        {
+            return stringList != null ? string.Join(" , ", stringList) : string.Empty;
+        }
+
+        public static string SpacedAfterCommaSeparate<T>(this IEnumerable<T> stringList)
+        {
+            return stringList != null ? string.Join(", ", stringList) : string.Empty;
+        }
+
+        public static string CommaSeparate<T>(this IEnumerable<T> stringList, string prefix)
+        {
+            if (stringList == null)
+                return string.Empty;
+            var enumerable = stringList as IList<T> ?? stringList.ToList();
+            var result = enumerable.Any() ? prefix : string.Empty;
+            return result + string.Join("," + prefix, enumerable);
+        }
+
+        #endregion
     }
 }
