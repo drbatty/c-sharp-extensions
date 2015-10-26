@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using CSharpExtensions;
-using CSharpExtensions.Text;
+using CSharpExtensions.ContainerClasses;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CSharpExtensionsTests.Text

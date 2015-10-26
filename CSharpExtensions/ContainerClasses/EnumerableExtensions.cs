@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using CSharpExtensions.ContainerClasses.Enums;
 using CSharpExtensions.Mathematical.Sets;
 
@@ -9,6 +11,8 @@ namespace CSharpExtensions.ContainerClasses
 {
     public static class EnumerableExtensions
     {
+        private static readonly Random Random = new Random();
+
         #region comprehension
 
         /// <summary>
@@ -420,6 +424,34 @@ namespace CSharpExtensions.ContainerClasses
         }
 
         /// <summary>
+        /// Returns a distinct enumerable of items from the source enumerable using the predicate
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="λ"></param>
+        /// <returns></returns>
+        /// http://stackoverflow.com/questions/520030/why-is-there-no-linq-method-to-return-distinct-values-by-a-predicate
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> λ)
+        {
+            return source.DistinctBy(λ, EqualityComparer<TKey>.Default);
+        }
+        //can be used to produce transversals for equivalence relations, e.g. a set of coset representatives for a subgroup of a group
+
+        private static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> λ, IEqualityComparer<TKey> comparer)
+        {
+            if (λ == null)
+                throw new ArgumentNullException("λ");
+            return DistinctByImpl(source, λ, comparer);
+        }
+
+        private static IEnumerable<TSource> DistinctByImpl<TSource, TKey>(IEnumerable<TSource> source, Func<TSource, TKey> λ, IEqualityComparer<TKey> comparer)
+        {
+            var knownKeys = new HashSet<TKey>(comparer);
+            return source.Where(element => knownKeys.Add(λ(element)));
+        }
+
+        /// <summary>
         /// Selects distinct elements from an enumerable with a given key selector
         /// </summary>
         /// <typeparam name="T">the type which the enumerable enumerates</typeparam>
@@ -438,5 +470,330 @@ namespace CSharpExtensions.ContainerClasses
         }
 
         #endregion
+
+        #region randomization
+
+        /// <summary>
+        /// Extension to randomly shuffle the elements of an IEnumerable
+        /// </summary>
+        /// <typeparam name="T">The type enumerated by the IEnumerable</typeparam>
+        /// <param name="iEnumerable">The IEnumerable to shuffle</param>
+        /// <returns>The shuffled version of the IEnumerable</returns>
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> iEnumerable)
+        {
+            return iEnumerable.OrderBy(t => Random.Next());
+        }
+
+        /// <summary>
+        /// Take random items
+        /// </summary>
+        /// <typeparam name="T">Collection type</typeparam>
+        /// <param name="this">Collection</param>
+        /// <param name="count">Number of items to take</param>
+        /// <returns>New enumerable</returns>
+        public static IEnumerable<T> TakeRandom<T>(this IEnumerable<T> @this, int count)
+        {
+            return @this.Shuffle().Take(count);
+        }
+
+        /// <summary>
+        /// Take random item
+        /// </summary>
+        /// <typeparam name="T">Collection type</typeparam>
+        /// <param name="this">Collection</param>
+        /// <returns>Item</returns>
+        public static T TakeRandom<T>(this IEnumerable<T> @this)
+        {
+            return @this.TakeRandom(1).Single();
+        }
+
+        #endregion
+
+        #region mathematical
+
+        /// <summary>
+        /// Computes all the combinations of elements from a given IEnumerable
+        /// </summary>
+        /// <typeparam name="T">the type which the IEnumerable enumerates</typeparam>
+        /// <param name="source">the IEnumerable which forms the enumerable of the combinations</param>
+        /// <param name="select">the number of elements to select</param>
+        /// <param name="repetition">whether or not repetition is allowed</param>
+        /// <returns>an IEnumerable of enumerables, which enumerates the combinations of the given IEnumerable</returns>
+        public static IEnumerable<IEnumerable<T>> Combinations<T>(this IEnumerable<T> source, int select,
+            bool repetition = false)
+        {
+            var enumerable = source as IList<T> ?? source.ToList();
+            return select == 0
+                ? new[] { new T[0] }
+                : enumerable.SelectMany((element, index) => enumerable
+                    .Skip(repetition ? index : index + 1)
+                    .Combinations(select - 1, repetition)
+                    .Select(c => new[] { element }.Concat(c)));
+        }
+
+        /// <summary>
+        /// returns the value in an IEnumerable which minimizes a double-valued function of the IEnumerable
+        /// </summary>
+        /// <typeparam name="T">the type of object enumerated by the IEnumerable</typeparam>
+        /// <param name="iEnumerable">the IEnumerable to minimize over</param>
+        /// <param name="λ">the function to minimize</param>
+        /// <returns>the value in an IEnumerable which minimizes the given double-valued function of the IEnumerable</returns>
+        public static Tuple<T, double> Minimizer<T>(this IEnumerable<T> iEnumerable, Func<T, double> λ)
+        {
+            var enumerable = iEnumerable as IList<T> ?? iEnumerable.ToList();
+            if (enumerable.None() || λ == null)
+                return null;
+            var min = enumerable.Min(λ);
+            return new Tuple<T, double>(enumerable.FirstOrDefault(v => λ(v) == min), min);
+        }
+
+        /// <summary>
+        /// returns the value in an IEnumerable which maximizes a double-valued function of the IEnumerable
+        /// </summary>
+        /// <typeparam name="T">the type of object enumerated by the IEnumerable</typeparam>
+        /// <param name="iEnumerable">the IEnumerable to maximize over</param>
+        /// <param name="λ">the function to maximize</param>
+        /// <returns>the value in an IEnumerable which maximizes the given double-valued function of the IEnumerable</returns>
+        public static Tuple<T, double> Maximizer<T>(this IEnumerable<T> iEnumerable, Func<T, double> λ)
+        {
+            var enumerable = iEnumerable as IList<T> ?? iEnumerable.ToList();
+            if (enumerable.None() || λ == null)
+                return null;
+            var max = enumerable.Max(λ);
+            return new Tuple<T, double>(enumerable.FirstOrDefault(v => λ(v) == max), max);
+        }
+
+        /// <summary>
+        /// the minimum over a pair of enumerables
+        /// </summary>
+        /// <typeparam name="T">the type of object enumerated by the IEnumerable</typeparam>
+        /// <param name="iEnumerable">the operand IEnumerable</param>
+        /// <param name="other">the enumerable2 given IEnumerable</param>
+        /// <param name="λ">the function to minimize</param>
+        /// <returns>the minimum over the given pair of enumerables</returns>
+        public static double Min<T>(this IEnumerable<T> iEnumerable, IEnumerable<T> other,
+            Func<T, T, double> λ)
+        {
+            var enumerable = iEnumerable as IList<T> ?? iEnumerable.ToList();
+            var ss = other as IList<T> ?? other.ToList();
+            if (enumerable.None() || ss.None() || λ == null)
+                return default(double);
+            return enumerable.Min(s1 => ss.Min(s2 => λ(s1, s2)));
+        }
+
+        /// <summary>
+        /// returns the pair of values which minimize a function on a pair of enumerables, and the minimum value
+        /// </summary>
+        /// <typeparam name="T">the type enumerated by the IEnumerable</typeparam>
+        /// <param name="iEnumerable">the operand IEnumerable</param>
+        /// <param name="other">the enumerable2 IEnumerable</param>
+        /// <param name="lambda">the function to minimize</param>
+        /// <returns>the pair of values which minimize a function on a pair of enumerables, and the minimum value</returns>
+        public static Tuple<Tuple<T, T>, double> Minimizers<T>(this IEnumerable<T> iEnumerable, IEnumerable<T> other,
+            Func<T, T, double> λ)
+        {
+            var enumerable = iEnumerable as IList<T> ?? iEnumerable.ToList();
+            var ss = other as IList<T> ?? other.ToList();
+            if (enumerable.None() || ss.None() || λ == null)
+                return null;
+            var minimizers = enumerable.Select(t1 => t1.Pair(ss.Minimizer(t2 => λ(t1, t2)).Item1));
+            var minimizer = minimizers.Minimizer(tuple => λ(tuple.Item1, tuple.Item2));
+            return minimizer.Item1.Pair(minimizer.Item2);
+        }
+
+        #endregion
+
+        #region null handling
+
+        /// <summary>
+        /// returns an empty enumerable if the given enumerable is null
+        /// </summary>
+        /// <typeparam name="T">the type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">the given enumerable</param>
+        /// <returns>either the given IEnumerable or an empty enumerable if the given enumerable is null</returns>
+        public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable ?? Enumerable.Empty<T>();
+        }
+
+        #endregion
+
+        #region string formatting
+
+        #region comma separation
+
+        /// <summary>
+        /// returns a string representation of a given enumerable of strings with the elements separated by commas and no spacing
+        /// </summary>
+        /// <typeparam name="T">the type enumerated by the enumerable</typeparam>
+        /// <param name="stringList">the li</param>
+        /// <returns>a string representation of a given enumerable of strings with the elements separated by commas and no spacing</returns>
+        public static string CommaSeparate<T>(this IEnumerable<T> stringList)
+        {
+            return stringList != null ? string.Join(",", stringList) : string.Empty;
+        }
+
+        public static string SpacedCommaSeparate<T>(this IEnumerable<T> stringList)
+        {
+            return stringList != null ? string.Join(" , ", stringList) : string.Empty;
+        }
+
+        public static string SpacedAfterCommaSeparate<T>(this IEnumerable<T> stringList)
+        {
+            return stringList != null ? string.Join(", ", stringList) : string.Empty;
+        }
+
+        public static string CommaSeparate<T>(this IEnumerable<T> stringList, string prefix)
+        {
+            if (stringList == null)
+                return string.Empty;
+            var enumerable = stringList as IList<T> ?? stringList.ToList();
+            var result = enumerable.Any() ? prefix : string.Empty;
+            return result + string.Join("," + prefix, enumerable);
+        }
+
+        /// <summary>
+        /// takes a generic enumerable and generates an enumerable of all the string representations
+        /// of the given enumerable
+        /// </summary>
+        /// <typeparam name="T">the type enumerated by the enumerable</typeparam>
+        /// <param name="enumerable">the given enumerable</param>
+        /// <returns>an enumerable of all the string representations of the given enumerable</returns>
+        public static IEnumerable<string> ToStrings<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable.Select(t => t.ToString());
+        }
+
+        /// <summary>
+        /// returns a string representation of a list of strings in the form
+        /// "a, b and c", i.e. with commas and "and"
+        /// </summary>
+        /// <param name="enumerable">enumerable</param>
+        /// <returns>the enumerable whose string representation to form</returns>
+        public static string EnglishSeparate(this IEnumerable<string> enumerable)
+        {
+            var enumerable1 = enumerable as IList<string> ?? enumerable.ToList();
+            var result = string.Join(", ", enumerable1.RemoveLast().ToArray());
+            if (enumerable1.Count > 1)
+                result += " and ";
+            result += enumerable1.Last();
+            return result;
+        }
+
+        #endregion
+
+        public static string ToString<T>(this IEnumerable<T> enumerable, string separator)
+        {
+            return ToString(enumerable, t => t.ToString(), separator);
+        }
+
+        public static string ToString<T>(this IEnumerable<T> enumerable, Func<T, string> λ, string separator)
+        {
+            var sb = new StringBuilder();
+            enumerable.Each(item =>
+            {
+                sb.Append(λ(item));
+                sb.Append(separator);
+            });
+            return sb.ToString(0, Math.Max(0, sb.Length - separator.Length));
+        }
+
+        public static string ToLines<T>(this IEnumerable<T> enumerable)
+        {
+            return ToString(enumerable, Environment.NewLine);
+        }
+
+        #endregion
+
+        #region sublist
+
+        /// <summary>
+        /// returns all the items enumerated by an enumerable from start to end (not including end)
+        /// </summary>
+        /// <typeparam name="T">the type of objects in the enumerable</typeparam>
+        /// <param name="enumerable">the given enumerable</param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        /// 
+        /// 
+        public static IEnumerable<T> Slice<T>(this IEnumerable<T> enumerable, int start, int end)
+        {
+            var index = 0;
+            int count;
+
+            // Optimise item count for ICollection interfaces.
+            var list = enumerable as IList<T> ?? enumerable.ToList();
+            if (enumerable is ICollection<T>)
+                count = ((ICollection<T>)enumerable).Count;
+            else
+            {
+                var collection = enumerable as ICollection;
+                count = collection != null ? collection.Count : list.Count();
+            }
+
+            // Get start/end indexes, negative numbers start at the end of the enumerable.
+            if (start < 0)
+                start += count;
+
+            if (end < 0)
+                end += count;
+
+            foreach (var item in list.TakeWhile(item => index < end))
+            {
+                if (index >= start)
+                    yield return item;
+
+                ++index;
+            }
+        }
+
+        public static IEnumerable<T> Tail<T>(this IEnumerable<T> enumerable, int number)
+        {
+            var enumerable1 = enumerable as IList<T> ?? enumerable.ToList();
+            return enumerable1.Slice(enumerable1.Count() - number, enumerable1.Count());
+        }
+
+        public static IEnumerable<T> Head<T>(this IEnumerable<T> enumerable, int number)
+        {
+            var enumerable1 = enumerable as IList<T> ?? enumerable.ToList();
+            return enumerable1.Slice(0, number);
+        }
+
+        #endregion
+
+        #region set-theoretic
+
+        public static IEnumerable<T> Intersection<T>(this IEnumerable<T> enumerable1, IEnumerable<T> enumerable2)
+        {
+            return enumerable1.Where(enumerable2.Contains);
+        }
+
+        public static IEnumerable<T> Intersection<T>(this IEnumerable<IEnumerable<T>> lists)
+        {
+            var enumerable = lists as IList<IEnumerable<T>> ?? lists.ToList();
+            return enumerable.None() ? new List<T>() : enumerable.Inject(enumerable.ElementAt(0), (acc, list) => acc.Intersection(list));
+        }
+
+        #endregion
+
+        #region containment
+
+        public static bool ContainsAll<T>(this IEnumerable<T> enumerable, params T[] args)
+        {
+            return args.All(enumerable.Contains);
+        }
+
+        public static bool ContainsAny<T>(this IEnumerable<T> enumerable, params T[] args)
+        {
+            return args.Any(enumerable.Contains);
+        }
+
+        public static bool ContainsNone<T>(this IEnumerable<T> enumerable, params T[] args)
+        {
+            return args.None(enumerable.Contains);
+        }
+
+        #endregion containment
     }
 }
