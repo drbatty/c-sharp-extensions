@@ -10,5 +10,6 @@
   <FrameworkUtilisationTypeForXUnitV2>UseStaticAnalysis</FrameworkUtilisationTypeForXUnitV2>
   <MetricsExclusionList>
 CSharpExtensionsTests\CSharpExtensionsTests.csproj
+MathsCoreTests\MathsCoreTests.csproj
 </MetricsExclusionList>
 </SolutionConfiguration>

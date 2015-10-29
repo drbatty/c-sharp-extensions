@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using CSharpExtensions;
 using CSharpExtensions.ContainerClasses;
+using CSharpExtensions.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CSharpExtensionsTests.Text
@@ -51,6 +54,20 @@ namespace CSharpExtensionsTests.Text
         }
 
         #endregion
+
+        #endregion
+
+        #region culture invariance
+
+        [TestMethod]
+        public void ToS_should_use_invariant_culture()
+        {
+            1.ToS().ShouldEqual(1.ToString(CultureInfo.InvariantCulture));
+            'a'.ToS().ShouldEqual('a'.ToString(CultureInfo.InvariantCulture));
+            1.0.ToS().ShouldEqual(1.0.ToString(CultureInfo.InvariantCulture));
+            var now = DateTime.Now;
+            now.ToS().ShouldEqual(now.ToString(CultureInfo.InvariantCulture));
+        }
 
         #endregion
     }

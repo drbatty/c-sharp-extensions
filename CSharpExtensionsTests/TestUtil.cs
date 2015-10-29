@@ -112,6 +112,42 @@ namespace CSharpExtensionsTests
             ts.EachIndex(i => list[i].ShouldEqual(ts[i]));
         }
 
+        #region integer comparison
+
+        public static void ShouldBeAtMost(this int @int, int max)
+        {
+            Assert.IsTrue(@int <= max);
+        }
+
+        public static void ShouldBeAtLeast(this int @int, int max)
+        {
+            Assert.IsTrue(@int >= max);
+        }
+
+        public static void ShouldBeLessThan(this int @int, int max)
+        {
+            Assert.IsTrue(@int < max);
+        }
+
+        public static void ShouldBeMoreThan(this int @int, int max)
+        {
+            Assert.IsTrue(@int < max);
+        }
+
+        public static void ShouldBeBetween(this int @int, int min, int max)
+        {
+            @int.ShouldBeAtLeast(min);
+            @int.ShouldBeAtMost(max);
+        }
+
+        public static void ShouldBeStrictlyBetween(this int @int, int min, int max)
+        {
+            @int.ShouldBeMoreThan(min);
+            @int.ShouldBeLessThan(max);
+        }
+
+        #endregion
+
         #region boolean handling
 
         /// <summary>
@@ -132,16 +168,6 @@ namespace CSharpExtensionsTests
         public static void ShouldBeFalse(this bool condition)
         {
             Assert.IsFalse(condition);
-        }
-
-        #endregion
-
-        #region dictionaries
-
-        public static void ShouldBeEquivalentMappingTo<TKey, TValue>(this IDictionary<TKey, TValue> dictionary,
-            IDictionary<TKey, TValue> other)
-        {
-            dictionary.IsEquivalentMappingTo(other).ShouldBeTrue();
         }
 
         #endregion

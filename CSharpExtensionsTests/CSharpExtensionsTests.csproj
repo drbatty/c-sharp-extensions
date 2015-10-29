@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -51,15 +52,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Base\TestBase.cs" />
     <Compile Include="ContainerClasses\EnumerableExtensionsTests.cs" />
     <Compile Include="ContainerClasses\DictionaryExtensionsTests.cs" />
+    <Compile Include="GeneralFixtures\DictionaryFixtures.cs" />
     <Compile Include="GeneralFixtures\Person.cs" />
     <Compile Include="GenericExtensionsTests.cs" />
     <Compile Include="IntExtensionsTests.cs" />
-    <Compile Include="Mathematical\Sets\SetTests.cs" />
+    <Compile Include="ObjectExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="Text\StringExtensionsTests.cs" />
+    <Compile Include="BoolExtensionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSharpExtensions\CSharpExtensions.csproj">
@@ -67,6 +71,7 @@
       <Name>CSharpExtensions</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

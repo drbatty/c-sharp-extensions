@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using CSharpExtensions.ContainerClasses.Enums;
-using CSharpExtensions.Mathematical.Sets;
 
 namespace CSharpExtensions.ContainerClasses
 {
@@ -144,17 +143,6 @@ namespace CSharpExtensions.ContainerClasses
             var collection = new Collection<T>();
             enumerable.Each(collection.Add);
             return collection;
-        }
-
-        /// <summary>
-        /// converts an IEnumerable to a set
-        /// </summary>
-        /// <typeparam name="T">the type enumerated by the IEnumerable</typeparam>
-        /// <param name="enumerable">the IEnumerable to convert</param>
-        /// <returns>a set containing the same elements as the IEnumerable enumerates</returns>
-        public static Set<T> ToSet<T>(this IEnumerable<T> enumerable)
-        {
-            return new Set<T>(enumerable);
         }
 
         #endregion

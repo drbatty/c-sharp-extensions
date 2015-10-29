@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Xml;
 
 namespace CSharpExtensions.Text
@@ -45,5 +45,28 @@ namespace CSharpExtensions.Text
             return s.Split('\n').Length;
         }
 
+        #region culture invariance
+
+        public static string ToS(this int o)
+        {
+            return o.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public static string ToS(this char c)
+        {
+            return c.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public static string ToS(this double d)
+        {
+            return d.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public static string ToS(this DateTime d)
+        {
+            return d.ToString(CultureInfo.InvariantCulture);
+        }
+
+        #endregion
     }
 }
