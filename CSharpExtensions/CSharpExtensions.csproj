@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoolExtensions.cs" />
+    <Compile Include="ContainerClasses\CollectionExtensions.cs" />
     <Compile Include="ContainerClasses\DictionaryExtensions.cs" />
     <Compile Include="ContainerClasses\EnumerableExtensions.cs" />
     <Compile Include="ContainerClasses\Enums\EnumerableRotationDirection.cs" />

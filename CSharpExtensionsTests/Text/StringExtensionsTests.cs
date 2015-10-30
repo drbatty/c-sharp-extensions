@@ -70,5 +70,16 @@ namespace CSharpExtensionsTests.Text
         }
 
         #endregion
+
+        #region character handling
+
+        [TestMethod]
+        public void CharAtTest()
+        {
+            "abc".CharAt(0).ShouldEqual('a');
+            "abc".CharAt(2).ShouldEqual('c');
+        }
+
+        #endregion
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 namespace CSharpExtensions.Text
@@ -65,6 +66,15 @@ namespace CSharpExtensions.Text
         public static string ToS(this DateTime d)
         {
             return d.ToString(CultureInfo.InvariantCulture);
+        }
+
+        #endregion
+
+        #region character handling
+
+        public static char CharAt(this string s, int index)
+        {
+            return s.ToCharArray()[index];
         }
 
         #endregion
