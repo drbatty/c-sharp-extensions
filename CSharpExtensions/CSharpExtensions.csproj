@@ -44,10 +44,12 @@
     <Compile Include="ContainerClasses\DictionaryExtensions.cs" />
     <Compile Include="ContainerClasses\EnumerableExtensions.cs" />
     <Compile Include="ContainerClasses\Enums\EnumerableRotationDirection.cs" />
+    <Compile Include="Exceptions\OutOfRangeException.cs" />
     <Compile Include="GenericExtensions.cs" />
     <Compile Include="IntExtensions.cs" />
     <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Text\CharExtensions.cs" />
     <Compile Include="Text\StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

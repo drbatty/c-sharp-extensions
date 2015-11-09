@@ -97,5 +97,15 @@ namespace CSharpExtensionsTests.Text
             'z'.IsLowerCaseAlphabetic(27).ShouldBeTrue();
             'Z'.IsUpperCaseAlphabetic(27).ShouldBeTrue();
         }
+
+        [TestMethod]
+        public void TestIsAlphabetic()
+        {
+            'A'.IsAlphabetic().ShouldBeTrue();
+            'Z'.IsAlphabetic().ShouldBeTrue();
+            'a'.IsAlphabetic().ShouldBeTrue();
+            'z'.IsAlphabetic().ShouldBeTrue();
+            '1'.IsAlphabetic().ShouldBeFalse();
+        }
     }
 }
