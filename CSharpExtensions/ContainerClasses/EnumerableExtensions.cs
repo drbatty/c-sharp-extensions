@@ -38,6 +38,12 @@ namespace CSharpExtensions.ContainerClasses
             enumerable1.Each(t => enumerable1.Each(u => λ(t, u)));
         }
 
+        public static bool AllPairs<T>(this IEnumerable<T> enumerable, Func<T, T, bool> λ)
+        {
+            var enumerable1 = enumerable as IList<T> ?? enumerable.ToList();
+            return enumerable1.All(t => enumerable1.All(u => λ(t, u)));
+        }
+
         /// <summary>
         /// Inject takes an accumulator value, and iterates through an enumerable, accumulating each value using the lambda
         /// Similar to Linq Aggregate, but with an independent accumulator, like Ruby's inject method

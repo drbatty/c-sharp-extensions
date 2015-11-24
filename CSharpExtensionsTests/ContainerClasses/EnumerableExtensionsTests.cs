@@ -58,6 +58,16 @@ namespace CSharpExtensionsTests.ContainerClasses
 
         #endregion
 
+        #region AllPair tests
+
+        [TestMethod]
+        public void TestAllPairs()
+        {
+            1.Upto(4).AllPairs((x, y) => x + y < 9).ShouldBeTrue();
+        }
+
+        #endregion
+
         #region Inject tests
 
         [TestMethod]
