@@ -38,6 +38,11 @@ namespace CSharpExtensionsTests
             Assert.AreNotEqual(left, right);
         }
 
+        public static void ShouldNotBeNull<T>(this T t)
+        {
+            Assert.IsNotNull(t);
+        }
+
         #endregion
 
         #region enumerables

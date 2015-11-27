@@ -51,6 +51,15 @@ namespace CSharpExtensions.Text
             return c.IsLowerCaseAlphabetic() || c.IsUpperCaseAlphabetic();
         }
 
+        public static int FromCoordinateLowerCaseLetterChar(this char a)
+        {
+            return a - 97;
+        }
+
+        public static int FromCoordinateNumberChar(this char a)
+        {
+            return a - 48;
+        }
         #endregion
     }
 }
