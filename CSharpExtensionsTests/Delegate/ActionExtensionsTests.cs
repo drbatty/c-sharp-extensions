@@ -38,10 +38,12 @@ namespace CSharpExtensionsTests.Delegate
             throw new Exception();
         }
 
+        //ncrunch: no coverage start
         public void DoesntThrowError()
         {
 
         }
+        //ncrunch: no coverage end
 
         [TestMethod]
         public void SuppressTest()
@@ -67,7 +69,9 @@ namespace CSharpExtensionsTests.Delegate
             try
             {
                 stillThrowsError();
+                //ncrunch: no coverage start
             }
+            //ncrunch: no coverage end
             catch (Exception)
             {
                 thrown = true;

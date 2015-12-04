@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CSharpExtensionsTests.Base
 {
+    /*
     public class TestBase
     {
         public static void ShouldBeNull<T>(params T[] ts)
@@ -14,5 +15,5 @@ namespace CSharpExtensionsTests.Base
         {
             ts.Each(t => Assert.IsNull(t));
         }
-    }
+    }*/
 }

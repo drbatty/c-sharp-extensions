@@ -10,6 +10,7 @@ namespace CSharpExtensionsTests.Reflection
 
     }
 
+    //ncrunch: no coverage start
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public sealed class NameAttribute : Attribute
     {
@@ -17,6 +18,7 @@ namespace CSharpExtensionsTests.Reflection
         {
         }
     }
+    //ncrunch: no coverage end
 
     [TestClass]
     public class PropertyInfoExtensionsTests

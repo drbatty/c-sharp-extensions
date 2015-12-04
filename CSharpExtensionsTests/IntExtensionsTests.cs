@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using CSharpExtensions;
+using CSharpExtensions.DependencyInjection;
+using CSharpExtensions.DependencyInjection.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CSharpExtensionsTests
@@ -141,6 +143,63 @@ namespace CSharpExtensionsTests
         {
             var array = 1.ArrayUpto(5);
             array.ShouldNumber(5);
+        }
+
+        [TestMethod]
+        public void TestMinutes()
+        {
+            3.Minutes().Minutes.ShouldEqual(3);
+        }
+
+        [TestMethod]
+        public void TestSeconds()
+        {
+            5.Seconds().Seconds.ShouldEqual(5);
+        }
+
+        [TestMethod]
+        public void ToPluralStringSingularTest()
+        {
+            1.ToPluralString().ShouldEqual(String.Empty);
+        }
+
+        [TestMethod]
+        public void ToPluralStringPluralTest()
+        {
+            2.ToPluralString().ShouldEqual("s");
+        }
+
+        /*
+        [TestMethod]
+        public void Maybe_do_test()
+        {
+            var mockRandomisationService = new Mock<IRandomisationService>();
+            mockRandomisationService.Setup(x => x.NextDouble()).Returns(0.6);
+            Providers.RandomisationService = mockRandomisationService.Object;
+            var total = 0;
+            Action<int, int> increment = (m, n) => total++;
+            3.MaybeDo(0.5, increment);
+            total.ShouldEqual(0);
+
+            mockRandomisationService.Setup(x => x.NextDouble()).Returns(0.1);
+            3.MaybeDo(0.5, increment);
+            total.ShouldEqual(9);
+        }*/
+
+        [TestMethod]
+        public void TestDecrementIfNonZero()
+        {
+            1.DecrementIfNonZero().ShouldEqual(0);
+            0.DecrementIfNonZero().ShouldEqual(0);
+        }
+
+        [TestMethod]
+        public void TestDistance()
+        {
+            5.Distance(5).ShouldEqual(0);
+            1.Distance(5).ShouldEqual(4);
+            5.Distance(1).ShouldEqual(4);
+            1.Distance(-1).ShouldEqual(2);
         }
     }
 }

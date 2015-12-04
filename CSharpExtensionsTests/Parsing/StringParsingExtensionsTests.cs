@@ -29,5 +29,14 @@ namespace CSharpExtensionsTests.Parsing
             CompositeListFixtures.TestListString.Inspect().ParseBrackets().ShouldEqual(CompositeListFixtures.TestListString);
             "a{b(c)d}e".ParseBrackets().Count().ShouldEqual(3);
         }
+
+        [TestMethod]
+        public void TestParsingEdgeCases()
+        {
+            ")".ParseBrackets();
+            "{)".ParseBrackets();
+            "}".ParseBrackets();
+            "(}".ParseBrackets();
+        }
     }
 }

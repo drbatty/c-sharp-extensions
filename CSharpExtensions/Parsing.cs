@@ -83,9 +83,8 @@ namespace CSharpExtensions
                             return result;
                         if (stack.Peek().Item1 == '(')
                         {
-                            var tuple = stack.Pop();
                             currentComposite.Content = collected;
-                            collected = tuple.Item2;
+                            collected = stack.Pop().Item2;
                             currentComposite = (CompositeList<string>)currentComposite.Parent;
                         }
                         else
@@ -96,9 +95,8 @@ namespace CSharpExtensions
                             return result;
                         if (stack.Peek().Item1 == '{')
                         {
-                            var tuple = stack.Pop();
                             currentComposite.Content = collected;
-                            collected = tuple.Item2;
+                            collected = stack.Pop().Item2;
                             currentComposite = (CompositeList<string>)currentComposite.Parent;
                         }
                         else

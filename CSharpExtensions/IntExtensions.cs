@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CSharpExtensions.ContainerClasses;
+using CSharpExtensions.Delegate;
 
 namespace CSharpExtensions
 {
@@ -96,5 +97,51 @@ namespace CSharpExtensions
         }
 
         #endregion
+
+        #region probabilistic
+
+        public static void MaybeDo(this int end, double probability, Action<int, int> λ)
+        {
+            end.MaybeDo(end, probability, λ);
+        }
+
+        public static void MaybeDo(this int end, int innerEnd, double probability, Action<int, int> λ)
+        {
+            end.Do(i => innerEnd.Do(j => λ.ExecuteWithProbability(i, j, probability)));
+        }
+
+        #endregion
+
+        #region mathematical
+
+        public static int Distance(this int i, int j)
+        {
+            return Math.Abs(i - j);
+        }
+
+        #endregion
+
+        public static TimeSpan Seconds(this int seconds)
+        {
+            return TimeSpan.FromSeconds(seconds);
+        }
+
+        public static TimeSpan Minutes(this int minutes)
+        {
+            return TimeSpan.FromMinutes(minutes);
+        }
+
+        //1.Seconds()
+        //20.Minutes()
+
+        public static string ToPluralString(this int value)
+        {
+            return value == 1 ? string.Empty : "s";
+        }
+
+        public static int DecrementIfNonZero(this int value)
+        {
+            return value == 0 ? value : value - 1;
+        }
     }
 }

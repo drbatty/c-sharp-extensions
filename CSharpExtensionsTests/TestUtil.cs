@@ -38,6 +38,11 @@ namespace CSharpExtensionsTests
             Assert.AreNotEqual(left, right);
         }
 
+        public static void ShouldBeNull<T>(this T t)
+        {
+            Assert.IsNull(t);
+        }
+
         public static void ShouldNotBeNull<T>(this T t)
         {
             Assert.IsNotNull(t);
@@ -79,6 +84,11 @@ namespace CSharpExtensionsTests
             iEnumerable.Contains(t).ShouldBeTrue();
         }
 
+        public static void ShouldNotContain<T>(this IEnumerable<T> iEnumerable, T t)
+        {
+            iEnumerable.Contains(t).ShouldBeFalse();
+        }
+
         /// <summary>
         /// asserts that a given enumerable should enumerate all of the elements enumerated by a second given enumerable
         /// </summary>
@@ -90,6 +100,11 @@ namespace CSharpExtensionsTests
             contained.Each(iEnumerable.ShouldContain);
         }
 
+        public static void ShouldNotContain<T>(this IEnumerable<T> iEnumerable, IEnumerable<T> notContained)
+        {
+            notContained.All(iEnumerable.Contains).ShouldBeFalse();
+        }
+
         /// <summary>
         /// asserts that a given enumerable should enumerate all of the supplied generic arguments
         /// </summary>
@@ -99,6 +114,11 @@ namespace CSharpExtensionsTests
         public static void ShouldContain<T>(this IEnumerable<T> iEnumerable, params T[] ts)
         {
             ts.Each(iEnumerable.ShouldContain);
+        }
+
+        public static void ShouldNotContain<T>(this IEnumerable<T> iEnumerable, params T[] ts)
+        {
+            ts.All(iEnumerable.Contains).ShouldBeFalse();
         }
 
         public static void ShouldContainExactly<T>(this IEnumerable<T> iEnumerable, params T[] ts)
@@ -136,7 +156,7 @@ namespace CSharpExtensionsTests
 
         public static void ShouldBeMoreThan(this int @int, int max)
         {
-            Assert.IsTrue(@int < max);
+            Assert.IsTrue(@int > max);
         }
 
         public static void ShouldBeBetween(this int @int, int min, int max)
@@ -176,5 +196,10 @@ namespace CSharpExtensionsTests
         }
 
         #endregion
+
+        public static void ShouldHaveType<T>(this object o)
+        {
+            o.GetType().ShouldEqual(typeof(T));
+        }
     }
 }

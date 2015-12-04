@@ -70,6 +70,16 @@ namespace CSharpExtensionsTests.ContainerClasses
 
         #endregion
 
+        #region AnyPair tests
+
+        [TestMethod]
+        public void TestAnyPairs()
+        {
+            1.Upto(4).AnyPair((x, y) => x + y == 2).ShouldBeTrue();
+        }
+
+        #endregion
+
         #endregion
 
         #region Inject tests

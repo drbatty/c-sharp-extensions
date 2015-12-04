@@ -22,7 +22,7 @@ namespace CSharpExtensions.Text
         public static void AppendTag(this StringBuilder stringBuilder, string tagName, string content, object attributes)
         {
             stringBuilder.Append("<" + tagName);
-            attributes.EachProperty(property => stringBuilder.Append(property.Name.ToLower() + "=\"" + attributes.GetPropertyValue(property.Name)));
+            attributes.EachProperty(property => stringBuilder.Append(" " + property.Name.ToLower() + "=\"" + attributes.GetPropertyValue(property.Name) + "\""));
             stringBuilder.Append(">" + content);
             stringBuilder.AppendClosingTag(tagName);
         }

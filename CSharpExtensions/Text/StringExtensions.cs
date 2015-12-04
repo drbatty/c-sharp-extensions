@@ -81,57 +81,11 @@ namespace CSharpExtensions.Text
 
         #endregion wrapping
 
-        #region comma separation
-
-        public static string SpacedCommaSeparate(this string s1, string s2)
-        {
-            return String.Join(" , ", s1, s2);
-        }
-
-        public static string SpacedCommaSeparate(this string s1, string s2, string s3)
-        {
-            return s1.SpacedCommaSeparate(s2.SpacedCommaSeparate(s3));
-        }
-
-        public static string SpacedCommaSeparate(this string s1, string s2, string s3, string s4)
-        {
-            return s1.SpacedCommaSeparate(s2.SpacedCommaSeparate(s3, s4));
-        }
-
-        public static string EnglishSeparate<T>(this IEnumerable<T> args) //TEST
-        {
-            var result = "";
-            if (args != null && args.Count() < 2)
-                return result;
-            if (args.Count() == 2)
-                return args.ElementAt(0) + " and " + args.ElementAt(1);
-            for (var i = 0; i < args.Count() - 2; i++)
-                result += args.ElementAt(i) + ", ";
-            result += " and " + args.ElementAt(args.Count() - 1);
-            return result;
-        }
-
-        #endregion
-
         #region escaping and sanitizing
-
-        public static string PasteFromWordSanitize(this string pastedFromWord)
-        {
-            return pastedFromWord.Replace("&lt;o:p&gt;&lt;/o:p&gt;", "")
-                .Replace("&lt;/h1&gt;", "")
-                .Replace("&lt;h1&gt;", "");
-        }
 
         public static string EscapeSingleQuotes(this string unescaped)
         {
             return unescaped.Replace("'", "\\\'");
-        }
-
-        public static string StripHtml(this string input)
-        {
-            // Will this simple expression replace all tags???
-            var tagsExpression = new Regex(@"</?.+?>");
-            return tagsExpression.Replace(input, " ");
         }
 
         #endregion
@@ -165,7 +119,7 @@ namespace CSharpExtensions.Text
             if (s.Length != 1)
                 return false;
             var c = s.ToCharArray()[0];
-            return c.IsUpperCaseAlphabetic(c);
+            return c.IsUpperCaseAlphabetic(max);
         }
 
         public static bool IsLowerCaseAlphabetic(this string s)
@@ -236,17 +190,6 @@ namespace CSharpExtensions.Text
             return (DateTime.TryParse(input, out dt));
         }
 
-        public static int TryParseToInt(this string input, int defaultValue)
-        {
-            int value;
-            return Int32.TryParse(input, out value) ? value : defaultValue;
-        }
-
-        /*public static int FromTwoDigitString(this string s)
-        {
-            return s.CharAt(0).FromCoordinateNumberChar() * 10 + s.CharAt(1).FromCoordinateNumberChar() - 1;
-        }*/
-
         public static bool IsGuid(this string s)
         {
             if (s == null)
@@ -268,12 +211,8 @@ namespace CSharpExtensions.Text
 
         public static bool IsStrongPassword(this string s)
         {
-            var isStrong = Regex.IsMatch(s, @"[\d]");
-            if (isStrong) isStrong = Regex.IsMatch(s, @"[a-z]");
-            if (isStrong) isStrong = Regex.IsMatch(s, @"[A-Z]");
-            if (isStrong) isStrong = Regex.IsMatch(s, @"[\@string~!@#\$%\^&\*\(\)\{\}\|\[\]\\:;'?,.`+=<>\/]");
-            if (isStrong) isStrong = s.Length > 7;
-            return isStrong;
+            return Regex.IsMatch(s, @"[\d]") && Regex.IsMatch(s, @"[a-z]") &&
+                Regex.IsMatch(s, @"[A-Z]") && Regex.IsMatch(s, @"[\@string~!@#\$%\^&\*\(\)\{\}\|\[\]\\:;'?,.`+=<>\/]") && s.Length > 7;
         }
 
         public static bool IsDecimal(this string input)
@@ -282,53 +221,6 @@ namespace CSharpExtensions.Text
 
             return Decimal.TryParse(input, out temp);
         }
-
-        public static bool MatchesWildcard(this string text, string pattern)
-        {
-            var it = 0;
-            while (text.CharAt(it) != 0 &&
-                   pattern.CharAt(it) != '*')
-            {
-                if (pattern.CharAt(it) != text.CharAt(it) && pattern.CharAt(it) != '?')
-                    return false;
-                it++;
-            }
-
-            var cp = 0;
-            var mp = 0;
-            var ip = it;
-
-            while (text.CharAt(it) != 0)
-            {
-                if (pattern.CharAt(ip) == '*')
-                {
-                    if (pattern.CharAt(++ip) == 0)
-                        return true;
-                    mp = ip;
-                    cp = it + 1;
-                }
-                else if (pattern.CharAt(ip) == text.CharAt(it) || pattern.CharAt(ip) == '?')
-                {
-                    ip++;
-                    it++;
-                }
-                else
-                {
-                    ip = mp;
-                    it = cp++;
-                }
-            }
-
-            while (pattern.CharAt(ip) == '*')
-                ip++;
-
-            return pattern.CharAt(ip) == 0;
-        }
-
-        //if (fileName.MatchesWildcard("*.cs"))
-        //{
-        //Console.WriteLine("{0} is a C# source file", fileName);
-        //}
 
         public static bool IsValidEmailAddress(this string s)
         {
@@ -340,20 +232,23 @@ namespace CSharpExtensions.Text
             return @string.Split(separator).Last();
         }
 
+        public static int FromTwoDigitString(this string s)
+        {
+            return s.CharAt(0).FromCoordinateNumberChar() * 10 + s.CharAt(1).FromCoordinateNumberChar();
+        }
+
         #endregion parsing
 
         #region substrings
 
         public static string Tail(this string stringToTail, int lengthFromStart)
         {
-            if (lengthFromStart < 0 || lengthFromStart > stringToTail.Length)
-                return string.Empty;
-            return stringToTail.Substring(lengthFromStart, stringToTail.Length - lengthFromStart);
+            return lengthFromStart.Between(0, stringToTail.Length) ? stringToTail.Substring(lengthFromStart, stringToTail.Length - lengthFromStart) : "";
         }
 
         public static string RemoveTail(this string @string, int numberOfLetters)
         {
-            return @string.Substring(0, @string.Length - numberOfLetters);
+            return numberOfLetters.Between(0, @string.Length) ? @string.Substring(0, @string.Length - numberOfLetters) : "";
         }
 
         public static string RemoveTail(this string @string)
@@ -459,53 +354,22 @@ namespace CSharpExtensions.Text
 
         public static string RemoveExtraWhitespace(this string s)
         {
-            return new Regex(Regexs.Whitespace).Replace(s, " ");
+            return new Regex(Regexs.Whitespace).Replace(s.Trim(), " ");
         }
 
         public static string Linkify(this string text, string target = "_self")
         {
             return Regexs.DomainRegex.Replace(
-                text,
-                match =>
+                text, match =>
                 {
                     var link = match.ToString();
                     var scheme = match.Groups["scheme"].Value == "https" ? Uri.UriSchemeHttps : Uri.UriSchemeHttp;
 
-                    var url = new UriBuilder(link) { Scheme = scheme }.Uri.ToString();
+                    var url = new UriBuilder(link) {Scheme = scheme}.Uri.ToString();
 
                     return String.Format(@"<a href=""{0}"" target=""{1}"">{2}</a>", url, target, link);
                 }
                 );
-        }
-
-        public static String ToSlug(this string text)
-        {
-            var builder = new StringBuilder();
-
-            foreach (
-                var c in
-                    text.ToCharArray()
-                        .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark))
-                builder.Append(c);
-
-            var bytes = Encoding.GetEncoding("Cyrillic").GetBytes(text);
-
-            return
-                Regex.Replace(
-                    Regex.Replace(Encoding.ASCII.GetString(bytes), @"\@string{2,}|[^\w]", " ", RegexOptions.ECMAScript)
-                        .Trim(), @"\@string+", "-").ToLowerInvariant();
-        }
-
-        //public static string ToPlural(this string @this, int count = 0)
-        //{
-        //    return count == 1 ? @this : System.Data.Entity.Design.PluralizationServices.PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US")).Pluralize(@this);
-        //}
-
-        public static string Snippet(this string str, int toLength, string cutOffReplacement = " ...")
-        {
-            if (String.IsNullOrEmpty(str) || str.Length <= toLength)
-                return str;
-            return str.Remove(toLength) + cutOffReplacement;
         }
 
         public static string ConvertToPascal(this string str)
@@ -517,23 +381,11 @@ namespace CSharpExtensions.Text
             var strWords = str.Split(' ');
             strWords.Do(i =>
             {
-                if (strWords[i].Length == 0)
-                    return;
                 var strWord = strWords[i];
                 var strFirstLetter = char.ToUpper(strWord[0]);
                 strWords[i] = strFirstLetter + strWord.Substring(1);
             });
             return string.Join(" ", strWords);
-        }
-
-        public static string ConvertToCamelCase(this string str)
-        {
-            if (str == null)
-                throw new ArgumentNullException("str", "Null is not a valid string!");
-            if (str.Length == 0)
-                return str;
-            str = ConvertToPascal(str);
-            return str.Substring(0, 1).ToLower() + str.Substring(1, str.Length - 1);
         }
 
         public static string Repeat(this string s, int n)
@@ -584,56 +436,7 @@ namespace CSharpExtensions.Text
 
         #endregion
 
-        #region html handling
-
-        /*
-
-        public static string HtmlEncode(this string data)
-        {
-            return HttpUtility.HtmlEncode(data);
-        }
-
-        public static string HtmlDecode(this string data)
-        {
-            return HttpUtility.HtmlDecode(data);
-        }
-
-        public static NameValueCollection ParseQueryString(this string query)
-        {
-            return HttpUtility.ParseQueryString(query);
-        }
-
-        public static string UrlEncode(this string url)
-        {
-            return HttpUtility.UrlEncode(url);
-        }
-
-        public static string UrlDecode(this string url)
-        {
-            return HttpUtility.UrlDecode(url);
-        }
-
-        public static string UrlPathEncode(this string url)
-        {
-            return HttpUtility.UrlPathEncode(url);
-        }
-
-          
-         */
-
-        #endregion
-
         #region regex handling
-
-        public static string RxReplace(this string str, string pattern, string value)
-        {
-            return Regex.Replace(str, pattern, value);
-        }
-
-        public static string RxRemove(this string str, string pattern)
-        {
-            return Regex.Replace(str, pattern, "");
-        }
 
         public static IEnumerable<string> Matches(this string str, string pattern)
         {
@@ -727,7 +530,6 @@ namespace CSharpExtensions.Text
 
         #endregion
 
-
         public static List<Tuple<XmlNodeType, string>> FlattenXml(this string xml)
         {
             var elements = new List<Tuple<XmlNodeType, string>>();
@@ -797,10 +599,5 @@ namespace CSharpExtensions.Text
         }
 
         #endregion
-
-        public static int FromTwoDigitString(this string s)
-        {
-            return s.CharAt(0).FromCoordinateNumberChar() * 10 + s.CharAt(1).FromCoordinateNumberChar() - 1;
-        }
     }
 }

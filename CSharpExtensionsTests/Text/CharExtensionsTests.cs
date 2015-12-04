@@ -107,5 +107,19 @@ namespace CSharpExtensionsTests.Text
             'z'.IsAlphabetic().ShouldBeTrue();
             '1'.IsAlphabetic().ShouldBeFalse();
         }
+
+        [TestMethod]
+        public void TestFromCoordinateLowerCaseLetterChar()
+        {
+            'a'.FromCoordinateLowerCaseLetterChar().ShouldEqual(0);
+            'j'.FromCoordinateLowerCaseLetterChar().ShouldEqual(9);
+        }
+
+        [TestMethod]
+        public void TestFromCoordinateNumberChar()
+        {
+            '0'.FromCoordinateNumberChar().ShouldEqual(0);
+            '9'.FromCoordinateNumberChar().ShouldEqual(9);
+        }
     }
 }

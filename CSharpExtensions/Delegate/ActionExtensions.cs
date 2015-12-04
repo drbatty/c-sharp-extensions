@@ -1,4 +1,5 @@
 ﻿using System;
+using CSharpExtensions.DependencyInjection;
 
 namespace CSharpExtensions.Delegate
 {
@@ -129,5 +130,17 @@ namespace CSharpExtensions.Delegate
                 return default(TReturnType);
             };
         }
+
+        public static void ExecuteWithProbability<T>(this Action<T> λ, T t, double probability)
+        {
+            if (Providers.RandomisationService.NextDouble() < probability)
+                λ(t);
+        }
+
+        public static void ExecuteWithProbability<T>(this Action<T, T> λ, T t1, T t2, double probability)
+        {
+            if (Providers.RandomisationService.NextDouble() < probability)
+                λ(t1, t2);
+        } 
     }
 }

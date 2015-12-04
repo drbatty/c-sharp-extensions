@@ -61,8 +61,10 @@
     <Compile Include="ContainerClasses\TupleExtensionsTests.cs" />
     <Compile Include="DateTimeExtensionsTests.cs" />
     <Compile Include="Delegate\ActionExtensionsTests.cs" />
+    <Compile Include="Dependency\DependencyTests.cs" />
     <Compile Include="DesignPattern\Structural\Composite\CompositeListTests.cs" />
     <Compile Include="DoubleExtensionsTests.cs" />
+    <Compile Include="EnumUtilitiesTests.cs" />
     <Compile Include="Exceptions\OutOfRangeExceptionTests.cs" />
     <Compile Include="GeneralFixtures\CompositeListFixtures.cs" />
     <Compile Include="GeneralFixtures\DictionaryFixtures.cs" />
@@ -75,11 +77,16 @@
     <Compile Include="RandomExtensionsTests.cs" />
     <Compile Include="Reflection\CustomAttributeDataExtensionsTests.cs" />
     <Compile Include="Reflection\PropertyInfoExtensionsTests.cs" />
+    <Compile Include="RegularExpressions\RegularExpressionsTests.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="Text\CharExtensionsTests.cs" />
     <Compile Include="Text\StringBuilderExtensionsTests.cs" />
+    <Compile Include="Text\StringBuilderXmlExtensionsTests.cs" />
     <Compile Include="Text\StringExtensionsTests.cs" />
     <Compile Include="BoolExtensionsTests.cs" />
+    <Compile Include="TestUtilTests.cs" />
+    <Compile Include="Text\StringBuilderHtmlExtensionsTests.cs" />
+    <Compile Include="Text\TokenizerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSharpExtensions\CSharpExtensions.csproj">

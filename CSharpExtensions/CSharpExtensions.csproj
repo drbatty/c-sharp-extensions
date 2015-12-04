@@ -40,6 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoolExtensions.cs" />
+    <Compile Include="Console\ConsoleApp.cs" />
+    <Compile Include="Console\ConsoleApplication.cs" />
     <Compile Include="ContainerClasses\ArrayExtensions.cs" />
     <Compile Include="ContainerClasses\CollectionExtensions.cs" />
     <Compile Include="ContainerClasses\DictionaryExtensions.cs" />
@@ -50,13 +52,23 @@
     <Compile Include="DateTimeExtensions.cs" />
     <Compile Include="Delegate\ActionExtensions.cs" />
     <Compile Include="Delegate\FuncExtensions.cs" />
+    <Compile Include="DependencyInjection\Interfaces\IFilesystemService.cs" />
+    <Compile Include="DependencyInjection\Interfaces\ILoggingService.cs" />
+    <Compile Include="DependencyInjection\Interfaces\IRandomisationService.cs" />
+    <Compile Include="DependencyInjection\Interfaces\ITimeService.cs" />
+    <Compile Include="DependencyInjection\Providers.cs" />
+    <Compile Include="DependencyInjection\RandomisationService.cs" />
+    <Compile Include="DependencyInjection\SystemTimeServices.cs" />
     <Compile Include="DesignPattern\Structural\Composite\CompositeList.cs" />
     <Compile Include="DesignPattern\Structural\Composite\IComposite.cs" />
     <Compile Include="DesignPattern\Structural\Composite\TreeTraversalStrategy.cs" />
     <Compile Include="DoubleExtensions.cs" />
+    <Compile Include="EnumUtilities.cs" />
     <Compile Include="Exceptions\OutOfRangeException.cs" />
     <Compile Include="GenericExtensions.cs" />
     <Compile Include="IntExtensions.cs" />
+    <Compile Include="Logging\ExceptionExtensions.cs" />
+    <Compile Include="MethodResult.cs" />
     <Compile Include="Net\HttpRequestExtensions.cs" />
     <Compile Include="Net\HttpResponseExtensions.cs" />
     <Compile Include="ObjectExtensions.cs" />
@@ -74,6 +86,8 @@
     <Compile Include="Text\StringBuilderHtmlExtensions.cs" />
     <Compile Include="Text\StringBuilderXmlExtensions.cs" />
     <Compile Include="Text\StringExtensions.cs" />
+    <Compile Include="Text\TextFormatter.cs" />
+    <Compile Include="Text\Tokenizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enums\" />
